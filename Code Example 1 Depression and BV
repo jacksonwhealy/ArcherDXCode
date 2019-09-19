@@ -70,11 +70,7 @@ proc freq data=labage;
 tables agequart / missing;
 run;
 
-* Step 8. Create dummy variables for age in quartiles;
-
-
-
-* Step 9. Create a variable that splits age into above and below the median;
+* Step 8. Create a variable that splits age into above and below the median;
 
 proc rank data=lab6 out=medianage groups=2 ties=mean;
 var i_mAge0;
@@ -85,7 +81,7 @@ proc freq data=medianage;
 tables agemedian / missing;
 run;
 
-* Step 10. Do descriptive statistics;
+* Step 9. Do descriptive statistics;
 
 
 proc freq data=lab6;
@@ -112,31 +108,31 @@ proc means data=lab6 min mean median max n nmiss;
 var i_povert i_mAge0 i_bmi;
 run;
 
-* Step 11. Create a 2x2 table showing the assocation of depression with BV;
+* Step 10. Create a 2x2 table showing the assocation of depression with BV;
 
 proc freq data=lab6;
 tables depress*bv / missing chisq cmh relrisk riskdiff;
 run;
 
-* Step 12. Run a univariate linear risk regression modeling the risk difference for your exposure and outcome;
+* Step 11. Run a univariate linear risk regression modeling the risk difference for your exposure and outcome;
 
 proc genmod data=lab6;
 model bv(ref="0")=depress/link=identity dist=bin;
 run;
 
-* Step 13. Run a univariate log-linear regression for your exposure and outcome;
+* Step 12. Run a univariate log-linear regression for your exposure and outcome;
 
 proc genmod data=lab6;
 model bv(ref="0")=depress/link=log dist=bin;
 run;
 
-* Step 14. Run a univariate logistic regression for your exposure and outcome;
+* Step 13. Run a univariate logistic regression for your exposure and outcome;
 
 proc genmod data=lab6;
 model bv(ref="0")=depress/link=logit dist=bin;
 run;
 
-* Step 15. Model BV as a function of age;
+* Step 14. Model BV as a function of age;
 
 proc genmod data=labage;
 model bv(ref="0")=agequart/link=logit dist=bin;
