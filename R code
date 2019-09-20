@@ -1,41 +1,28 @@
-# Install data management, epi, and analysis packages
+# Install packages
 install.packages("tidyverse") 
-install.packages("splitstackshape")
-install.packages("epiR") 
-install.packages("lmtest") 
-install.packages("Epi") 
-install.packages("popEpi")
-install.packages("survival") 
-install.packages("survminer")
-install.packages("lme4")
-install.packages("sjstats")
-install.packages("mice")
-install.packages("arsenal")
-install.packages("survey")
-install.packages("ICC")
-install.packages("meta")
-install.packages("metafor")
-install.packages("broom.mixed")
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("shiny")
+install.packages("zoo")
+install.packages("DT")
+install.packages("rio")
+install.packages("plyr")
+install.packages("data.table")
+install.packages("irr")
+install.packages("gmodels")
 
 # Load packages
-library(tidyverse)
-library(lmtest)
-library(survival)
-library(survminer)
-library(epiR)
-library(Epi)
-library(lme4)
-library(popEpi)
-library(mice)
-library(sjstats)
-library(splitstackshape)
-library(arsenal)
-library(survey)
-library(ICC)
-library(meta)
-library(metafor)
-library(broom)
-library(broom.mixed)
+library(tidyverse) 
+library(dplyr)
+library(ggplot2)
+library(shiny)
+library(zoo)
+library(DT)
+library(rio)
+library(plyr)
+library(data.table)
+library(irr)
+library(gmodels)
 
 # Set working directory, load data set, explore data
 setwd("~/Desktop/R")
@@ -115,7 +102,8 @@ sd(archerdx$value)
 sd(archerdx$valueA, na.rm=TRUE)
 sd(archerdx$valueB, na.rm=TRUE)
 
-
+# table
+datatable(archerdx$valueA,archerdx$valueB)
 
 # 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
 
@@ -123,20 +111,43 @@ sd(archerdx$valueB, na.rm=TRUE)
 
 # Test 1: Combined Values
 t.test(archerdx$valueA,archerdx$valueB)
-# Conclusion: there is no significant difference in the measurements between device A and device B
+# Conclusion: there is no significant difference in the combined measurements between device A and device B
 
 # Test 2: Fingers Only
 t.test(archerdx$fingersA,archerdx$fingersB)
-# Conclusion: there is no significant difference in the measurements between device A and device B
+# Conclusion: there is no significant difference in the finger measurements between device A and device B
 
 # Test 3: Toes Only 
 t.test(archerdx$toesA,archerdx$toesB)
-# Conclusion: there is no significant difference in the measurements between device A and device B
+# Conclusion: there is no significant difference in the toe measurements between device A and device B
 
 # 4. Convert	the	measurement	values	to	a	binary	outcome	using	the	following	rules: 
 #    a. For	finger_length:	values	<	80	=	'short', values	≥	80	=	'long'
 #    b. For	finger_length:	values	<	25	=	'short',	values	≥	25	=	'long'
 #    c. Calculate	the	overall	percent	agreement	in binary results	between	the	two	devices.
 
+# Part A: Reclassify finger length
+archerdx$binaryfingerA <-ifelse(archerdx$fingersA <80,
+                         c("short"), c("long"))
+archerdx$binaryfingerA
 
 
+archerdx$binaryfingerB <-ifelse(archerdx$fingersB <80,
+                                c("short"), c("long"))
+archerdx$binaryfingerB
+
+
+# Part B: Reclassify toe length
+archerdx$binarytoeA <-ifelse(archerdx$toesA <25,
+                                c("short"), c("long"))
+archerdx$binarytoeA
+
+archerdx$binarytoeB <-ifelse(archerdx$toesB <25,
+                             c("short"), c("long"))
+archerdx$binarytoeB
+
+# Part C: Calculate overall percent agreement
+
+# 2-Way Cross Tabulation
+
+CrossTable(archerdx$binaryfingerA, archerdx$binaryfingerB)
