@@ -75,14 +75,13 @@ as.numeric(archerdx$toeB)
 #create histograms
 
 hist(archerdx$valueA, main="Device A Measurements, Fingers and Toes", xlab = "Measurement (mm)", col="blue")
-hist(archerdx$valueB, main="Device A Measurements, Figers and Toes", xlab = "Measurement (mm)", col="red")
-hist(archerdx$valueA, add=T)
+hist(archerdx$valueB, main="Device B Measurements, Figers and Toes", xlab = "Measurement (mm)", col="red")
 
 hist(archerdx$fingersA, main="Device A Measurements, Fingers", xlab = "Measurement (mm)", col="blue")
 hist(archerdx$fingersB, main="Device B Measurements, Fingers", xlab = "Measurement (mm)", col="red")
 
-hist(archerdx$toesA, main="Device A Measurements, Toes", xlab = "Measurement (mm)", col="red")
-hist(archerdx$toesB, main="Device B Measurements, Toes", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$toesA, main="Device A Measurements, Toes", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$toesB, main="Device B Measurements, Toes", xlab = "Measurement (mm)", col="red")
 
 # create box-and-whisker plots
 
@@ -121,12 +120,23 @@ sd(archerdx$valueB, na.rm=TRUE)
 # 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
 
 # perform a t-test comparing the mean values measured by device A to the mean values of measured by device B
-t.test(archerdx$valueA,archerdx$valueB)
 
+# Test 1: Combined Values
+t.test(archerdx$valueA,archerdx$valueB)
+# Conclusion: there is no significant difference in the measurements between device A and device B
+
+# Test 2: Fingers Only
+t.test(archerdx$fingersA,archerdx$fingersB)
+# Conclusion: there is no significant difference in the measurements between device A and device B
+
+# Test 3: Toes Only 
+t.test(archerdx$toesA,archerdx$toesB)
 # Conclusion: there is no significant difference in the measurements between device A and device B
 
 # 4. Convert	the	measurement	values	to	a	binary	outcome	using	the	following	rules: 
 #    a. For	finger_length:	values	<	80	=	'short', values	≥	80	=	'long'
 #    b. For	finger_length:	values	<	25	=	'short',	values	≥	25	=	'long'
 #    c. Calculate	the	overall	percent	agreement	in binary results	between	the	two	devices.
+
+
 
