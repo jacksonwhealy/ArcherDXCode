@@ -1,5 +1,4 @@
 # Install data management, epi, and analysis packages
-
 install.packages("tidyverse") 
 install.packages("splitstackshape")
 install.packages("epiR") 
@@ -38,30 +37,96 @@ library(metafor)
 library(broom)
 library(broom.mixed)
 
-# Set working directory, load data set
-
+# Set working directory, load data set, explore data
 setwd("~/Desktop/R")
 
-archer <- read.csv(file = "coding_example_dat.csv", header = TRUE, sep = ",")
+archerdx <- read.csv(file = "coding_example_dat.csv", header = TRUE, sep = ",")
 
-view(archer)
+view(archerdx)
 
 # 1. Create	a	plot	or	plots	that	visually	assess	whether	there	is	a	difference	the	measurements	taken	with	device	A	and	device	B.
 
-archer$fingers <- (archer$value) when archer$measurement="finger_lengths"
-archer$toes    <- (archer$value) if archer$measurement == "toe_lengths"
+#create new variables for values of device A
+archerdx$valueA <-ifelse(archerdx$device=="dev_A",
+                        c(archerdx$value), c(NA))
+as.numeric(archerdx$valueA)
 
-mean(archer$value)
-mean(archer$fingers)
-mean(archer$toes)
-  
+archerdx$fingersA <-ifelse(archerdx$measurement=="finger_lengths",
+                         c(archerdx$valueA), c(NA))
+as.numeric(archerdx$fingersA)
+
+archerdx$toesA <-ifelse(archerdx$measurement=="toe_lengths",
+                           c(archerdx$valueA), c(NA))
+as.numeric(archerdx$toeA)
+
+#create new variable for values of device B
+archerdx$valueB <-ifelse(archerdx$device=="dev_B",
+                         c(archerdx$value), c(NA))
+as.numeric(archerdx$valueB)
+
+archerdx$fingersB <-ifelse(archerdx$measurement=="finger_lengths",
+                           c(archerdx$valueB), c(NA))
+as.numeric(archerdx$fingersB)
+
+archerdx$toesB <-ifelse(archerdx$measurement=="toe_lengths",
+                        c(archerdx$valueB), c(NA))
+as.numeric(archerdx$toeB)
+
+#create histograms
+
+hist(archerdx$valueA, main="Device A Measurements, Fingers and Toes", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$valueB, main="Device A Measurements, Figers and Toes", xlab = "Measurement (mm)", col="red")
+hist(archerdx$valueA, add=T)
+
+hist(archerdx$fingersA, main="Device A Measurements, Fingers", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$fingersB, main="Device B Measurements, Fingers", xlab = "Measurement (mm)", col="red")
+
+hist(archerdx$toesA, main="Device A Measurements, Toes", xlab = "Measurement (mm)", col="red")
+hist(archerdx$toesB, main="Device B Measurements, Toes", xlab = "Measurement (mm)", col="blue")
+
+# create box-and-whisker plots
+
+boxplot(archerdx$valueA, archerdx$valueB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+
+boxplot(archerdx$fingersA, archerdx$fingersB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+
+boxplot(archerdx$toesA, archerdx$toesB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+        
+
 # 2. Create	a	table	with	descriptive	statistics	for	the	two	devices	(mean,	median,	and	standard	deviation)
+
+# mean
+mean(archerdx$value)
+mean(archerdx$valueA, na.rm=TRUE)
+mean(archerdx$valueB, na.rm=TRUE)
+
+#median
+median(archerdx$value)
+median(archerdx$valueA, na.rm=TRUE)
+median(archerdx$valueB, na.rm=TRUE)
+
+#standard error
+sd(archerdx$value)
+sd(archerdx$valueA, na.rm=TRUE)
+sd(archerdx$valueB, na.rm=TRUE)
+
 
 
 # 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
 
+# perform a t-test comparing the mean values measured by device A to the mean values of measured by device B
+t.test(archerdx$valueA,archerdx$valueB)
+
+# Conclusion: there is no significant difference in the measurements between device A and device B
 
 # 4. Convert	the	measurement	values	to	a	binary	outcome	using	the	following	rules: 
 #    a. For	finger_length:	values	<	80	=	'short', values	≥	80	=	'long'
 #    b. For	finger_length:	values	<	25	=	'short',	values	≥	25	=	'long'
 #    c. Calculate	the	overall	percent	agreement	in binary results	between	the	two	devices.
+
