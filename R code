@@ -103,15 +103,13 @@ sd(archerdx$valueA, na.rm=TRUE) #29.85137
 sd(archerdx$valueB, na.rm=TRUE) #32.43095
 
 # table
-matrix(1:6, nrow=2, ncol=3, dimnames = list(c("Device A","Device B"), c("Mean","Median","Standard Error")))
-
 DescStatsTable = matrix( 
     c(54.8184, 57.77733, 46.09096, 52.69046, 29.85137, 32.43095), 
      nrow=2, 
      ncol=3, 
      dimnames = list(c("Device A","Device B"), c("Mean","Median","Standard Error")))
 
-DescStatsTable
+View(DescStatsTable)
 
 # 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
 
@@ -135,6 +133,16 @@ t.test(archerdx$toesA,archerdx$toesB)
 #    c. Calculate	the	overall	percent	agreement	in binary results	between	the	two	devices.
 
 # Part A: Reclassify finger length
+archerdx$binaryfinger <-ifelse(archerdx$fingersA <80,
+                                c("short"), c("long"))
+archerdx$binaryfinger
+
+
+archerdx$binaryfingerB <-ifelse(archerdx$fingersB <80,
+                                c("short"), c("long"))
+archerdx$binaryfingerB
+
+
 archerdx$binaryfingerA <-ifelse(archerdx$fingersA <80,
                          c("short"), c("long"))
 archerdx$binaryfingerA
@@ -146,8 +154,12 @@ archerdx$binaryfingerB
 
 
 # Part B: Reclassify toe length
+archerdx$binarytoe <-ifelse(archerdx$toes <25,
+                             c("short"), c("long"))
+archerdx$binarytoe
+
 archerdx$binarytoeA <-ifelse(archerdx$toesA <25,
-                                c("short"), c("long"))
+                             c("short"), c("long"))
 archerdx$binarytoeA
 
 archerdx$binarytoeB <-ifelse(archerdx$toesB <25,
@@ -156,7 +168,11 @@ archerdx$binarytoeB
 
 # Part C: Calculate overall percent agreement
 
-# 2-Way Cross Tabulation
+FingerAgreement <-table(archerdx$device, archerdx$binaryfingerA, archerdx$binaryfingerB)
+view(FingerAgreement)
+prop.table(FingerAgreement)
 
 
-
+ToeAgreement <-table(archerdx$device, archerdx$binarytoeA, archerdx$binarytoeB)
+view(ToeAgreement)
+prop.table(ToeAgreement)
