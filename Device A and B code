@@ -24,7 +24,7 @@ library(data.table)
 library(irr)
 library(gmodels)
 
-# Set working directory, load data set, explore data
+# Set working directory, load dataset, explore data
 setwd("~/Desktop/R")
 
 archerdx <- read.csv(file = "coding_example_dat.csv", header = TRUE, sep = ",")
@@ -60,7 +60,6 @@ archerdx$toesB <-ifelse(archerdx$measurement=="toe_lengths",
 as.numeric(archerdx$toeB)
 
 #create histograms
-
 hist(archerdx$valueA, main="Device A Measurements, Fingers and Toes", xlab = "Measurement (mm)", col="blue")
 hist(archerdx$valueB, main="Device B Measurements, Figers and Toes", xlab = "Measurement (mm)", col="red")
 
