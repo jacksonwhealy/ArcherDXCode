@@ -176,4 +176,4 @@ prop.table(FingerAgreement)
 ToeAgreement <-table(archerdx$device, archerdx$binarytoeA, archerdx$binarytoeB)
 view(ToeAgreement)
 prop.table(ToeAgreement)
-© 2019 GitHub, Inc.
+
