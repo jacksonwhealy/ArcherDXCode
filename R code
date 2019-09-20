@@ -88,22 +88,30 @@ boxplot(archerdx$toesA, archerdx$toesB,
 # 2. Create	a	table	with	descriptive	statistics	for	the	two	devices	(mean,	median,	and	standard	deviation)
 
 # mean
-mean(archerdx$value)
-mean(archerdx$valueA, na.rm=TRUE)
-mean(archerdx$valueB, na.rm=TRUE)
+mean(archerdx$value) #56.29786
+mean(archerdx$valueA, na.rm=TRUE) #54.8184
+mean(archerdx$valueB, na.rm=TRUE) #57.77733
 
 #median
-median(archerdx$value)
-median(archerdx$valueA, na.rm=TRUE)
-median(archerdx$valueB, na.rm=TRUE)
+median(archerdx$value) #48.4887
+median(archerdx$valueA, na.rm=TRUE) #46.09096
+median(archerdx$valueB, na.rm=TRUE) #52.69046
 
 #standard error
-sd(archerdx$value)
-sd(archerdx$valueA, na.rm=TRUE)
-sd(archerdx$valueB, na.rm=TRUE)
+sd(archerdx$value) #31.00573
+sd(archerdx$valueA, na.rm=TRUE) #29.85137
+sd(archerdx$valueB, na.rm=TRUE) #32.43095
 
 # table
-datatable(archerdx$valueA,archerdx$valueB)
+matrix(1:6, nrow=2, ncol=3, dimnames = list(c("Device A","Device B"), c("Mean","Median","Standard Error")))
+
+DescStatsTable = matrix( 
+    c(54.8184, 57.77733, 46.09096, 52.69046, 29.85137, 32.43095), 
+     nrow=2, 
+     ncol=3, 
+     dimnames = list(c("Device A","Device B"), c("Mean","Median","Standard Error")))
+
+DescStatsTable
 
 # 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
 
@@ -150,4 +158,5 @@ archerdx$binarytoeB
 
 # 2-Way Cross Tabulation
 
-CrossTable(archerdx$binaryfingerA, archerdx$binaryfingerB)
+
+
