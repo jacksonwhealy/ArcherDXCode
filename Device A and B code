@@ -1,1 +1,179 @@
+# Install packages
+install.packages("tidyverse") 
+install.packages("dplyr")
+install.packages("ggplot2")
+install.packages("shiny")
+install.packages("zoo")
+install.packages("DT")
+install.packages("rio")
+install.packages("plyr")
+install.packages("data.table")
+install.packages("irr")
+install.packages("gmodels")
 
+# Load packages
+library(tidyverse) 
+library(dplyr)
+library(ggplot2)
+library(shiny)
+library(zoo)
+library(DT)
+library(rio)
+library(plyr)
+library(data.table)
+library(irr)
+library(gmodels)
+
+# Set working directory, load data set, explore data
+setwd("~/Desktop/R")
+
+archerdx <- read.csv(file = "coding_example_dat.csv", header = TRUE, sep = ",")
+
+view(archerdx)
+
+# 1. Create	a	plot	or	plots	that	visually	assess	whether	there	is	a	difference	the	measurements	taken	with	device	A	and	device	B.
+
+#create new variables for values of device A
+archerdx$valueA <-ifelse(archerdx$device=="dev_A",
+                        c(archerdx$value), c(NA))
+as.numeric(archerdx$valueA)
+
+archerdx$fingersA <-ifelse(archerdx$measurement=="finger_lengths",
+                         c(archerdx$valueA), c(NA))
+as.numeric(archerdx$fingersA)
+
+archerdx$toesA <-ifelse(archerdx$measurement=="toe_lengths",
+                           c(archerdx$valueA), c(NA))
+as.numeric(archerdx$toeA)
+
+#create new variable for values of device B
+archerdx$valueB <-ifelse(archerdx$device=="dev_B",
+                         c(archerdx$value), c(NA))
+as.numeric(archerdx$valueB)
+
+archerdx$fingersB <-ifelse(archerdx$measurement=="finger_lengths",
+                           c(archerdx$valueB), c(NA))
+as.numeric(archerdx$fingersB)
+
+archerdx$toesB <-ifelse(archerdx$measurement=="toe_lengths",
+                        c(archerdx$valueB), c(NA))
+as.numeric(archerdx$toeB)
+
+#create histograms
+
+hist(archerdx$valueA, main="Device A Measurements, Fingers and Toes", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$valueB, main="Device B Measurements, Figers and Toes", xlab = "Measurement (mm)", col="red")
+
+hist(archerdx$fingersA, main="Device A Measurements, Fingers", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$fingersB, main="Device B Measurements, Fingers", xlab = "Measurement (mm)", col="red")
+
+hist(archerdx$toesA, main="Device A Measurements, Toes", xlab = "Measurement (mm)", col="blue")
+hist(archerdx$toesB, main="Device B Measurements, Toes", xlab = "Measurement (mm)", col="red")
+
+# create box-and-whisker plots
+
+boxplot(archerdx$valueA, archerdx$valueB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+
+boxplot(archerdx$fingersA, archerdx$fingersB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+
+boxplot(archerdx$toesA, archerdx$toesB,
+        names=c("Device A","Device B"),
+        ylab="Measurement (mm)")
+        
+
+# 2. Create	a	table	with	descriptive	statistics	for	the	two	devices	(mean,	median,	and	standard	deviation)
+
+# mean
+mean(archerdx$value) #56.29786
+mean(archerdx$valueA, na.rm=TRUE) #54.8184
+mean(archerdx$valueB, na.rm=TRUE) #57.77733
+
+#median
+median(archerdx$value) #48.4887
+median(archerdx$valueA, na.rm=TRUE) #46.09096
+median(archerdx$valueB, na.rm=TRUE) #52.69046
+
+#standard error
+sd(archerdx$value) #31.00573
+sd(archerdx$valueA, na.rm=TRUE) #29.85137
+sd(archerdx$valueB, na.rm=TRUE) #32.43095
+
+# table
+DescStatsTable = matrix( 
+    c(54.8184, 57.77733, 46.09096, 52.69046, 29.85137, 32.43095), 
+     nrow=2, 
+     ncol=3, 
+     dimnames = list(c("Device A","Device B"), c("Mean","Median","Standard Error")))
+
+View(DescStatsTable)
+
+# 3. Were	the	measurements	collected	with	device	A	significantly	different	than	those	collected	with	device	B?
+
+# perform a t-test comparing the mean values measured by device A to the mean values of measured by device B
+
+# Test 1: Combined Values
+t.test(archerdx$valueA,archerdx$valueB)
+# Conclusion: there is no significant difference in the combined measurements between device A and device B
+
+# Test 2: Fingers Only
+t.test(archerdx$fingersA,archerdx$fingersB)
+# Conclusion: there is no significant difference in the finger measurements between device A and device B
+
+# Test 3: Toes Only 
+t.test(archerdx$toesA,archerdx$toesB)
+# Conclusion: there is no significant difference in the toe measurements between device A and device B
+
+# 4. Convert	the	measurement	values	to	a	binary	outcome	using	the	following	rules: 
+#    a. For	finger_length:	values	<	80	=	'short', values	≥	80	=	'long'
+#    b. For	finger_length:	values	<	25	=	'short',	values	≥	25	=	'long'
+#    c. Calculate	the	overall	percent	agreement	in binary results	between	the	two	devices.
+
+# Part A: Reclassify finger length
+archerdx$binaryfinger <-ifelse(archerdx$fingersA <80,
+                                c("short"), c("long"))
+archerdx$binaryfinger
+
+
+archerdx$binaryfingerB <-ifelse(archerdx$fingersB <80,
+                                c("short"), c("long"))
+archerdx$binaryfingerB
+
+
+archerdx$binaryfingerA <-ifelse(archerdx$fingersA <80,
+                         c("short"), c("long"))
+archerdx$binaryfingerA
+
+
+archerdx$binaryfingerB <-ifelse(archerdx$fingersB <80,
+                                c("short"), c("long"))
+archerdx$binaryfingerB
+
+
+# Part B: Reclassify toe length
+archerdx$binarytoe <-ifelse(archerdx$toes <25,
+                             c("short"), c("long"))
+archerdx$binarytoe
+
+archerdx$binarytoeA <-ifelse(archerdx$toesA <25,
+                             c("short"), c("long"))
+archerdx$binarytoeA
+
+archerdx$binarytoeB <-ifelse(archerdx$toesB <25,
+                             c("short"), c("long"))
+archerdx$binarytoeB
+
+# Part C: Calculate overall percent agreement
+
+FingerAgreement <-table(archerdx$device, archerdx$binaryfingerA, archerdx$binaryfingerB)
+view(FingerAgreement)
+prop.table(FingerAgreement)
+
+
+ToeAgreement <-table(archerdx$device, archerdx$binarytoeA, archerdx$binarytoeB)
+view(ToeAgreement)
+prop.table(ToeAgreement)
+© 2019 GitHub, Inc.
